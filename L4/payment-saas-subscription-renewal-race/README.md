@@ -1,0 +1,12 @@
+# Job tính phí renewal tự động chạy trùng lúc khách tự đổi gói/hủy gói trên subscription SaaS
+
+**Hệ thống:** Một SaaS B2B tính phí theo subscription hàng tháng, có job billing tự động chạy vào đúng ngày renewal của mỗi khách để charge thẻ và gia hạn, khách hàng cũng có thể tự đổi gói hoặc hủy gói qua UI vào bất kỳ thời điểm nào.
+
+**Vai trò của flow:** Flow phải xử lý đúng khi job billing tự động renewal và hành động thủ công của khách (đổi gói/hủy) chạm vào cùng 1 subscription gần như đồng thời, tránh charge sai gói hoặc charge sau khi khách đã hủy.
+
+**Yêu cầu cụ thể:**
+- Mô tả cụ thể: job billing bắt đầu xử lý renewal cho subscription S lúc 00:00:05 (đọc gói hiện tại là "Pro"), đúng lúc khách bấm hủy subscription lúc 00:00:06, trước khi job kịp charge thẻ — yêu cầu job phải lock (hoặc dùng version check) trên record subscription trước khi charge, nếu phát hiện trạng thái đã đổi so với lúc đọc ban đầu (đã bị hủy) thì dừng ngay lập tức, không charge, không tạo invoice mới.
+- Mô tả race khi khách đổi gói (downgrade từ Pro sang Basic) đúng lúc job renewal đang giữa quá trình charge theo gói Pro (đã gọi tới cổng thanh toán, đang chờ phản hồi) — quy định rõ lần renewal này vẫn hoàn tất theo gói Pro với giá đã khóa tại thời điểm job bắt đầu xử lý, việc đổi gói mới chỉ có hiệu lực từ chu kỳ kế tiếp; không được hủy giữa chừng giao dịch đang gọi cổng thanh toán vì có thể phía cổng đã charge thành công dù hệ thống nội bộ chưa kịp ghi nhận.
+- Mô tả cụ thể: khách bấm hủy subscription ngay 5 giây sau khi job billing đã charge thành công chu kỳ mới — quy định rõ chính sách hoàn tiền theo tỷ lệ hoặc không hoàn cho phần thời gian còn lại của chu kỳ, và đảm bảo trạng thái subscription cuối cùng nhất quán, không rơi vào tình trạng vừa "đã charge chu kỳ mới" vừa "đã hủy ngay lập tức" gây mâu thuẫn khi hiển thị cho khách.
+- Job renewal chạy hàng loạt cho nhiều subscription trong cùng 1 batch theo ngày: đảm bảo mỗi subscription được xử lý độc lập với 1 lock/version check riêng, lỗi hoặc conflict xảy ra ở 1 subscription (do khách đang thao tác trùng lúc) không được làm chậm hoặc ảnh hưởng tới việc xử lý các subscription khác trong cùng batch.
+- Đảm bảo idempotency của job renewal: nếu job bị crash giữa chừng sau khi đã charge thành công ở cổng thanh toán nhưng chưa kịp cập nhật trạng thái subscription (ví dụ crash ngay sau khi gọi cổng thanh toán, trước khi ghi nhận kết quả), lần chạy lại job cho cùng subscription trong cùng chu kỳ không được charge lần 2 — phải kiểm tra trạng thái/idempotency key trước khi gọi cổng thanh toán lại.

@@ -1,0 +1,12 @@
+# Mở bán vé concert số lượng giới hạn với chọn ghế cụ thể
+
+**Hệ thống:** Một nền tảng bán vé sự kiện mở bán vé cho 1 concert hot, khách hàng chọn ghế cụ thể trên sơ đồ hội trường (không chỉ chọn số lượng chung như flash sale sản phẩm thông thường).
+
+**Vai trò của flow:** Flow phải giữ ghế tạm thời (hold) ngay khi khách chọn ghế trong lúc khách điền thông tin thanh toán, đảm bảo không 2 khách cùng giữ/mua trùng 1 ghế, và nhả ghế đúng hạn nếu khách không hoàn tất thanh toán kịp thời gian quy định.
+
+**Yêu cầu cụ thể:**
+- Mô tả cụ thể: 2 khách cùng bấm chọn ghế A12 gần như đồng thời (chênh nhau vài chục mili giây) — yêu cầu dùng update nguyên tử có điều kiện chuyển trạng thái ghế từ "available" sang "held" (kiểu `UPDATE seats SET status = 'held' WHERE seat_id = ? AND status = 'available'`), chỉ 1 request thành công; request thua phải nhận phản hồi ngay "ghế đã được giữ bởi người khác" và được gợi ý chọn ghế khác, không phải chờ timeout mới biết kết quả.
+- Ghế được giữ tạm trong 1 khoảng thời gian cố định (ví dụ 5-10 phút) để khách điền thông tin thanh toán; mô tả cụ thể race giữa job tự động nhả ghế hết hạn và request xác nhận thanh toán đến ngay sát thời điểm hết hạn — transaction xác nhận thanh toán phải kiểm tra hold vẫn còn hiệu lực (chưa bị job nhả) ngay trước khi chốt vé, nếu đã hết hạn phải từ chối rõ ràng và tự động hoàn tiền nếu thao tác thanh toán ở cổng bên ngoài đã thành công trước khi hệ thống kịp phát hiện hết hạn.
+- Khi khách mở nhiều tab/thiết bị bằng cùng 1 tài khoản để chọn nhiều ghế khác nhau cho cùng sự kiện, quy định giới hạn số ghế/vé tối đa mỗi tài khoản được giữ cùng lúc, và kiểm tra giới hạn này phải atomic để không bị vượt khi nhiều request giữ ghế từ cùng tài khoản gửi lên gần như đồng thời.
+- Khi khách đổi sang ghế khác sau khi đã giữ 1 ghế (ví dụ nhận ra ghế đã chọn không ưng ý), thao tác đổi ghế phải là 1 transaction atomic gồm nhả ghế cũ và giữ ghế mới, không được để khoảng hở giữa 2 bước khiến ghế mới bị người khác cướp mất ngay sau khi ghế cũ vừa nhả ra, hoặc để khách vô tình giữ đồng thời cả 2 ghế nếu bước giữ ghế mới thất bại giữa chừng.
+- Sơ đồ ghế hiển thị real-time cho tất cả khách đang xem cùng sự kiện: quy định độ trễ cập nhật trạng thái ghế (available/held/sold) chấp nhận được giữa các client, tránh hiển thị 1 ghế "còn trống" trong khi thực tế vừa bị giữ bởi người khác vài trăm mili giây trước, gây khách bấm chọn liên tục rồi nhận lỗi.
