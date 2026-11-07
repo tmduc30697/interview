@@ -1,0 +1,20 @@
+Hệ thống: Ứng dụng gọi xe tương tự Grab/Uber, thiết kế từ đầu: hàng triệu người dùng, hàng trăm nghìn tài xế gửi vị trí mỗi 3–5 giây, cao điểm hàng chục nghìn yêu cầu đặt xe mỗi phút trong một thành phố.
+
+Vai trò của flow: Đề system design tổng quát: ước lượng quy mô, chọn kiến trúc và storage, ghép tài xế gần nhất cho khách một cách đúng và nhanh, rồi tính tiền.
+
+Yêu cầu cụ thể:
+Làm rõ yêu cầu và ước lượng: chức năng cốt lõi (đặt xe, ghép tài xế, theo dõi chuyến, thanh toán), QPS ghi vị trí, dung lượng lưu trữ, độ trễ mục tiêu; tách yêu cầu chức năng khỏi phi chức năng.
+
+Geo-indexing: lưu vị trí tài xế bằng geohash/S2/H3 hoặc Redis GEO, tìm tài xế trong bán kính, xử lý biên ô lưới; vị trí dạng dữ liệu nóng, ghi nhiều, chỉ cần giữ bản mới nhất (TTL), lịch sử đẩy sang kho lạnh.
+
+Ghép tài xế (matching): chọn theo khoảng cách/ETA/đánh giá, không để một tài xế nhận hai chuyến (lock/atomic claim với TTL), timeout khi tài xế không phản hồi rồi chuyển người tiếp theo, hủy và đặt lại an toàn.
+
+Realtime: đẩy vị trí tài xế tới khách qua WebSocket/SSE, giảm tần suất theo trạng thái, xử lý mất kết nối.
+
+Máy trạng thái chuyến đi: requested → matched → picking-up → in-trip → completed/cancelled, chuyển trạng thái hợp lệ và idempotent, bền vững sau crash.
+
+Giá và thanh toán: tính giá theo quãng đường/thời gian, surge pricing theo cung cầu từng khu vực, thanh toán thẻ hoặc tiền mặt, chia tiền cho tài xế và đối soát.
+
+Scale và độ tin cậy: phân vùng theo thành phố/khu vực, sharding, cache, xử lý một thành phố quá nóng, degrade mềm khi một thành phần lỗi, và những đánh đổi bạn chấp nhận.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

@@ -1,0 +1,18 @@
+Hệ thống: Nền tảng sản phẩm tiêu dùng có hàng trăm triệu sự kiện hành vi mỗi ngày (xem, bấm, mua); đội product muốn dashboard, báo cáo và thử nghiệm A/B, trong khi đội backend lo các truy vấn phân tích làm chậm database vận hành.
+
+Vai trò của flow: Đưa dữ liệu hành vi từ hệ thống vận hành sang hệ thống phân tích đáng tin cậy, và dùng nó để phát hành tính năng có kiểm soát.
+
+Yêu cầu cụ thể:
+Pipeline dữ liệu: thu thập sự kiện (SDK/log → Kafka), xử lý batch hoặc streaming (lambda/kappa), nạp vào kho phân tích; tách OLTP khỏi OLAP (cột lưu trữ, data warehouse) để truy vấn nặng không ảnh hưởng người dùng.
+
+Chất lượng và tính đúng: khử trùng sự kiện (event id), xử lý sự kiện đến muộn bằng watermark, schema registry/versioning, kiểm tra chất lượng dữ liệu và backfill khi có lỗi.
+
+Đếm ở quy mô lớn: số liệu xấp xỉ (HyperLogLog cho unique user, count-min sketch) khi chấp nhận sai số; pre-aggregation và rollup theo giờ/ngày.
+
+Feature flag: bật/tắt tính năng không cần deploy, rollout theo phần trăm/cohort/tenant, kill switch tức thì, dọn flag cũ, đánh giá flag nhanh và an toàn khi service cấu hình lỗi (giá trị mặc định).
+
+Thử nghiệm A/B: phân nhóm nhất quán theo user (hash ổn định), chọn chỉ số chính và chỉ số bảo vệ, cỡ mẫu và thời lượng, tránh nhìn kết quả sớm (peeking), xử lý nhiều thử nghiệm chồng nhau.
+
+Quyền riêng tư: ẩn danh/băm định danh, tuân thủ đồng ý của người dùng và yêu cầu xóa dữ liệu trong kho phân tích.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

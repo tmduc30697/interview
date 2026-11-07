@@ -1,0 +1,16 @@
+{
+  "editor.wordWrap": "bounded",
+  "editor.wordWrapColumn": 100,
+  "highlight.regexes": {
+    "(^---$)": {
+      "filterLanguageRegex": "plaintext",
+      "decorations": [
+        {
+          "isWholeLine": true,
+          "color": "transparent",
+          "textDecoration": "none; background: linear-gradient(transparent calc(50% - 0.5px), #999999 calc(50% - 0.5px), #999999 calc(50% + 0.5px), transparent calc(50% + 0.5px))"
+        }
+      ]
+    }
+  }
+}

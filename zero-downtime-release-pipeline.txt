@@ -1,0 +1,18 @@
+Hệ thống: Nền tảng SaaS/e-commerce + backend mobile, deploy nhiều lần mỗi ngày; người dùng mobile không cập nhật app đồng loạt nên backend phục vụ nhiều phiên bản client cùng lúc; schema database thay đổi theo từng release.
+
+Vai trò của flow: Release liên tục không downtime, giảm bán kính ảnh hưởng của lỗi, và rollback nhanh.
+
+Yêu cầu cụ thể:
+Blue-green: hai môi trường song song, chuyển traffic ở load balancer, giữ môi trường cũ để rollback tức thì; xử lý database dùng chung và session/cache khi chuyển; chi phí gấp đôi hạ tầng.
+
+Canary: đẩy dần 1% → 5% → 25% → 100% theo tiêu chí tự động (tỷ lệ lỗi, latency, chỉ số kinh doanh như tỷ lệ checkout), tự rollback khi vượt ngưỡng; với luồng thanh toán rủi ro cao dùng canary dài hơn và theo cohort.
+
+Graceful shutdown: nhận SIGTERM, ngừng nhận request mới (readiness fail), chờ request/job đang chạy xong, commit offset/ack, rồi thoát; chỉnh terminationGracePeriod và preStop hook, tránh mất đơn hàng đang checkout hay job dở.
+
+Schema migration kiểu expand/contract: thêm cột/bảng tương thích ngược, ghi kép, backfill theo lô có throttle, chuyển đọc, cuối cùng mới xóa cũ (ví dụ tách orders JSON thành order_items, thêm bảng lịch sử trạng thái); migration tách riêng khỏi deploy code để rollback được; tránh khóa bảng lớn.
+
+API versioning cho mobile: giữ tương thích nhiều phiên bản app, feature flag, chính sách ngừng hỗ trợ (deprecation), buộc nâng cấp khi cần.
+
+Điều kiện tiên quyết: health/readiness check chính xác, observability để quyết định promote hay rollback.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

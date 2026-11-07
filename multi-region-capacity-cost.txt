@@ -1,0 +1,18 @@
+Hệ thống: Một SaaS đã có người dùng ở nhiều châu lục, hiện chạy một vùng cloud duy nhất; độ trễ cho người dùng xa cao, một sự cố vùng làm sập toàn bộ, hóa đơn cloud tăng nhanh và đợt ra mắt lớn sắp tới chưa biết cần bao nhiêu tài nguyên.
+
+Vai trò của flow: Mở rộng ra nhiều vùng, ước lượng năng lực đúng và kiểm soát chi phí mà không đánh đổi độ tin cậy.
+
+Yêu cầu cụ thể:
+Kiến trúc multi-region: so sánh active-passive và active-active; định tuyến người dùng về vùng gần nhất (GeoDNS/anycast), failover tự động, và hệ quả với session, cache, hàng đợi.
+
+Dữ liệu đa vùng: replication đồng bộ so với bất đồng bộ, xung đột khi ghi ở nhiều vùng (last-write-wins, CRDT, hoặc gán một vùng sở hữu mỗi bản ghi), độ trễ so với nhất quán, và data residency (dữ liệu châu Âu phải ở châu Âu).
+
+Capacity planning: ước lượng QPS, băng thông, dung lượng và tốc độ tăng; công thức theo Little’s law; headroom cho đỉnh tải, dự phóng theo mùa và sự kiện.
+
+Load test và kiểm chứng: kịch bản tải thực tế (không chỉ request đều), tìm điểm gãy và nút cổ chai (DB connection, thread pool), chaos test cho failover vùng.
+
+Kiểm soát chi phí: chọn kích thước instance, reserved/spot, autoscale có giới hạn, lifecycle cho storage, giảm chi phí truyền dữ liệu giữa vùng, gắn nhãn chi phí theo team/tính năng và cảnh báo vượt ngân sách.
+
+Đánh đổi: chi phí và độ phức tạp của multi-region so với lợi ích; khi nào một vùng với backup liên vùng là đủ.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

@@ -1,0 +1,20 @@
+Hệ thống: SaaS cung cấp public API cho khách hàng qua API key theo gói free/pro/enterprise, có tính năng chat AI gọi nhà cung cấp LLM bên ngoài, và cho khách cấu hình webhook/URL để hệ thống gọi ra.
+
+Vai trò của flow: Mở API an toàn, công bằng và có thể tính tiền, đồng thời không bị lệ thuộc hay bị lợi dụng bởi các dịch vụ bên ngoài.
+
+Yêu cầu cụ thể:
+Rate limiting theo API key và gói: token bucket/sliding window phân tán (Redis), giới hạn theo giây và theo tháng, header RateLimit/Retry-After, burst, xử lý nhiều instance gateway, cho phép khách enterprise có quota riêng.
+
+Idempotency key cho thao tác ghi: retry của khách không tạo bản ghi trùng; lưu kết quả theo key có TTL.
+
+Pagination và versioning: cursor pagination, ổn định theo thời gian, phiên bản API và chính sách ngừng hỗ trợ.
+
+Circuit breaker + fallback cho LLM provider: timeout, breaker, fallback sang model/nhà cung cấp khác hoặc phản hồi dự phòng, xử lý rate limit và lỗi streaming giữa chừng, giới hạn chi phí token theo khách.
+
+Webhook gửi đi: ký payload (HMAC), retry backoff + DLQ, xử lý endpoint khách chậm hoặc chết mà không chặn hệ thống.
+
+Chống SSRF: chặn IP nội bộ/metadata cloud sau khi phân giải DNS, chống DNS rebinding và redirect, giới hạn scheme/cổng/kích thước/timeout, chạy qua egress proxy.
+
+Quản lý secret: lưu API key băm, key của provider trong vault, rotate không downtime với hai key hợp lệ cùng lúc, phát hiện secret bị lộ, không log secret.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

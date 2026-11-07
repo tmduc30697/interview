@@ -1,0 +1,18 @@
+Hệ thống: Luồng checkout e-commerce chạm tới Inventory, Payment (cổng thanh toán bên ngoài kiểu Stripe/VNPay) và Shipping; cổng thanh toán thỉnh thoảng chậm/lỗi và gửi webhook trễ hoặc sai thứ tự.
+
+Vai trò của flow: Hoàn tất đơn hàng đúng một lần xuyên nhiều service, tự phục hồi khi một bước lỗi, và không làm sập hệ thống khi đối tác có sự cố.
+
+Yêu cầu cụ thể:
+Saga orchestration: các bước reserve inventory → charge payment → create shipment, mỗi bước có compensating action (release, refund, cancel); persist saga state để resume sau crash; ghi event log để audit/replay.
+
+Compensate lỗi: nếu compensate cũng thất bại thì retry có backoff + jitter, vượt ngưỡng thì escalate cho xử lý thủ công và alert; đơn không được kẹt ở trạng thái lửng lơ.
+
+Idempotency: idempotency key cho thao tác charge và cho cả các bước saga để retry không charge hai lần; xử lý trường hợp đã charge nhưng chưa kịp lưu kết quả.
+
+Circuit breaker: bọc lời gọi cổng thanh toán (closed/open/half-open, ngưỡng lỗi, timeout ngắn), có fallback (đưa vào hàng chờ, báo "đang xử lý") và không retry dồn dập khi breaker mở; bulkhead tách thread pool.
+
+Webhook out-of-order: webhook có thể đến trùng, trễ hoặc đảo thứ tự (paid trước pending); xác minh chữ ký, lưu event theo id để khử trùng, dùng state machine chỉ cho phép chuyển trạng thái hợp lệ, và đối chiếu bằng cách hỏi lại gateway khi nghi ngờ.
+
+Quan sát: metric trạng thái breaker, tỷ lệ compensate, độ trễ từng bước; alert khi breaker mở lâu.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

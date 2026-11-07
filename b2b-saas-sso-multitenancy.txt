@@ -1,0 +1,22 @@
+Hệ thống: SaaS B2B nhiều tenant dùng chung database/schema (cột tenant_id); mỗi công ty khách hàng có IdP riêng (Okta, Azure AD, Google Workspace), tenant lớn nhỏ rất khác nhau về lưu lượng; có cả công cụ nội bộ dùng chung nhiều phòng ban.
+
+Vai trò của flow: Đăng nhập doanh nghiệp an toàn, cô lập dữ liệu giữa các tenant, và vận hành công bằng giữa tenant lớn và nhỏ.
+
+Yêu cầu cụ thể:
+SSO (SAML/OIDC) và OAuth: cấu hình IdP theo tenant, xác thực chữ ký/audience/nonce/state, JIT provisioning, đồng bộ user (SCIM) và offboarding thu hồi quyền ngay; đăng nhập Google OAuth cho công cụ nội bộ và ánh xạ domain email sang tenant.
+
+Khôi phục khi mất IdP: tài khoản break-glass cấp tổ chức dựng sẵn, quy trình xác minh admin chặt chẽ chống giả danh, chạy song song IdP cũ/mới khi cutover, phân biệt sự cố tạm thời với việc thực sự đổi IdP.
+
+MFA theo chính sách tổ chức: admin tenant bật/bắt buộc MFA, quy tắc áp dụng cho user SSO và non-SSO.
+
+Multi-tenancy isolation: mọi truy vấn bắt buộc có tenant_id (row-level security/ORM scope) để không rò dữ liệu; test kiểm tra cô lập; so sánh shared schema, schema-per-tenant, DB-per-tenant; cô lập theo phòng ban/seller trong công cụ nội bộ hoặc marketplace.
+
+Index theo tenant: index có tenant_id dẫn đầu, tránh một tenant lớn làm chậm tenant khác (noisy neighbor).
+
+Cache quyền (permission cache): cache role/permission để khỏi query mỗi request nhưng phải invalidate ngay khi đổi quyền hoặc offboard.
+
+Rate limit và load balancing theo tenant: quota theo gói, weighted routing, tách tenant lớn sang pool riêng.
+
+Cô lập theo seller/phòng ban: người bán chỉ thấy và sửa dữ liệu đơn hàng, sản phẩm của mình, kiểm tra ở tầng dữ liệu chứ không chỉ ở UI; báo cáo và API đều lọc theo seller_id.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

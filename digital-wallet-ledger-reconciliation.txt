@@ -1,0 +1,24 @@
+Hệ thống: Ví điện tử/ngân hàng số và SaaS thu phí thuê bao: nạp tiền từ ngân hàng liên kết, chuyển tiền nội bộ, thanh toán tại nhiều điểm, thu phí hàng tháng qua payment processor ngoài (khách nâng/hạ gói giữa chu kỳ, job renewal chạy trên nhiều instance), chia tiền cho seller/tài xế; số tiền hiện lưu dạng float ở một số bảng cũ.
+
+Vai trò của flow: Mọi đồng tiền phải đúng, không âm, không thu hai lần, truy vết được, và khớp với sao kê của đối tác.
+
+Yêu cầu cụ thể:
+Cập nhật số dư đồng thời: nạp và thanh toán song song không làm sai số dư (khóa dòng, optimistic version, hoặc ledger append-only + số dư dẫn xuất); không cho âm số dư.
+
+Deadlock chuyển tiền: chuyển A→B và B→A cùng lúc phải khóa theo thứ tự cố định (theo account id), transaction ngắn, retry khi deadlock.
+
+Ledger kép và idempotency: mỗi giao dịch ghi bút toán nợ/có cân bằng; request lặp (kể cả charge theo khóa (khách, chu kỳ)) không ghi hoặc thu hai lần.
+
+Renewal race + distributed lock: job renewal chỉ chạy một lần mỗi chu kỳ (lease TTL, heartbeat, fencing token), chống race giữa renewal và việc khách nâng/hủy gói cùng lúc.
+
+Đổi gói và dunning: tính prorate, đồng bộ billing với entitlement (saga có compensate), downgrade giữa chu kỳ và credit dư; thanh toán thất bại thì retry theo lịch có backoff, thông báo khách, grace period trước khi khóa tính năng.
+
+Schema migration float → integer cents: không downtime (thêm cột mới, ghi kép, backfill theo lô, kiểm tra tổng, chuyển đọc, bỏ cột cũ); xử lý làm tròn và chênh lệch lịch sử.
+
+Reconciliation: đối soát hàng ngày giữa ledger/hóa đơn nội bộ với sao kê của đối tác hoặc processor (khớp theo mã giao dịch, số tiền, thời điểm), phân loại sai lệch (thiếu, thừa, lệch số tiền, lệch ngày cắt), xử lý refund và chargeback, hàng đợi điều tra, điều chỉnh có audit; webhook của processor có thể trùng và sai thứ tự.
+
+Payout/hoa hồng: chia tiền cho seller hoặc tài xế sau khi trừ phí, hoàn tiền (kể cả phát sinh sau khi đã payout, trừ vào kỳ sau) và cuốc hủy hoặc trả tiền mặt; payout chạy lại được mà không trả hai lần.
+
+Giao dịch giá trị lớn: step-up xác thực, giới hạn hạn mức, cảnh báo bất thường.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

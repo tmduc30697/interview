@@ -1,0 +1,20 @@
+Hệ thống: Mạng xã hội với newsfeed từ người đang follow, trang cá nhân, like/view/comment, thông báo; có người nổi tiếng với hàng triệu follower và bài viral nhận hàng chục nghìn tương tác mỗi giây.
+
+Vai trò của flow: Dựng feed nhanh, đếm chính xác tương đối, cập nhật thời gian thực và không nghẽn ở các nút nóng.
+
+Yêu cầu cụ thể:
+Newsfeed query và indexing: index (user_id, created_at) cho truy vấn gần nhất, so sánh fan-out on write với fan-out on read và cách lai cho celebrity.
+
+Cache feed/profile: cache feed đã dựng, invalidate khi có bài mới/xóa/chặn/ẩn, TTL và làm mới nền, tránh thundering herd ở profile hot.
+
+Counters ghi cao: like/view count dùng Redis hoặc batch flush thay UPDATE trên dòng nóng, sharded counter, like idempotent theo user, chống đếm gian lận, đối soát định kỳ với dữ liệu gốc.
+
+Cursor pagination: feed không bị lặp/sót khi có bài mới chèn vào; cursor ổn định, opaque, hết hạn an toàn.
+
+Realtime và thông báo: push qua WebSocket/SSE khi online, push/email khi offline, presence, gom digest, giới hạn tần suất, không gửi trùng giữa các kênh.
+
+Client: khôi phục đúng vị trí scroll và danh sách đã tải khi bấm Back (lưu state), đồng bộ giữa nhiều tab, xử lý dữ liệu cũ khi quay lại.
+
+Tách schema: bình luận lồng nhau tách khỏi bảng bài viết bằng migration an toàn nếu cần.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

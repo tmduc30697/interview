@@ -1,0 +1,20 @@
+Hệ thống: Nền tảng upload và xem video theo yêu cầu, hàng triệu video, file gốc nhiều GB; kèm tải lên/tải xuống tệp riêng tư; chi phí storage và băng thông lớn.
+
+Vai trò của flow: Nhận file lớn an toàn, transcode hiệu quả, phân phối nhanh qua CDN và kiểm soát chi phí.
+
+Yêu cầu cụ thể:
+Upload trực tiếp lên object storage: presigned URL ngắn hạn ràng buộc kích thước/loại tệp, multipart/chunked resumable upload, dọn các phần dở dang.
+
+Xác thực sau upload: kiểm tra loại tệp thật, quét mã độc, giới hạn thời lượng/kích thước trước khi vào pipeline.
+
+Pipeline transcode: hàng đợi, nhiều độ phân giải chạy song song, một rendition lỗi không chặn các cái khác; retry chỉ phần còn thiếu (checkpoint theo segment) với backoff và DLQ; đóng gói HLS/DASH, sinh thumbnail.
+
+Autoscale worker: scale theo độ sâu hàng đợi, dùng spot instance an toàn (job resumable), giới hạn chi phí.
+
+Progressive availability: video public khi có ít nhất một rendition sẵn sàng, cập nhật trạng thái cho người dùng.
+
+CDN: signed URL/cookie cho nội dung riêng tư, cache key và TTL, thu hồi quyền khi đã cache ở edge, invalidate khi thay file.
+
+Vòng đời lưu trữ: dọn file gốc/tạm sau X ngày, chuyển lạnh, vẫn giữ khả năng re-transcode khi đổi codec.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

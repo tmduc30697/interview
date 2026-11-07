@@ -1,0 +1,20 @@
+Hệ thống: Ứng dụng tiêu dùng/fintech với tài khoản email+password, có lưu giao dịch nhạy cảm; thường xuyên bị dò mật khẩu và chiếm tài khoản.
+
+Vai trò của flow: Bảo vệ toàn bộ vòng đời đăng nhập: đăng nhập, khôi phục, xác thực nhiều lớp, và lưu phiên an toàn ở client.
+
+Yêu cầu cụ thể:
+Rate limiting chống brute force/credential stuffing: giới hạn theo IP, theo tài khoản và theo thiết bị, backoff lũy tiến, CAPTCHA khi nghi ngờ; không để lộ tài khoản có tồn tại hay không; cân nhắc khóa tài khoản nhưng tránh bị lợi dụng để khóa người khác.
+
+Quên mật khẩu qua email: token ngẫu nhiên dùng một lần, băm khi lưu, hết hạn ngắn, vô hiệu hóa sau khi dùng, thu hồi mọi phiên cũ khi đổi mật khẩu; chống enumeration và spam gửi email.
+
+MFA: TOTP/WebAuthn/OTP, bắt buộc với thao tác nhạy cảm, mã dự phòng và quy trình khôi phục khi mất thiết bị mà không tạo lối vòng; chống tấn công mệt mỏi (MFA fatigue).
+
+Device trust và step-up: nhận diện thiết bị quen, chấm điểm rủi ro (vị trí lạ, thiết bị mới, hành vi bất thường), yêu cầu xác thực bổ sung với giao dịch giá trị lớn hoặc thay đổi thông tin thanh toán/địa chỉ.
+
+Lưu phiên ở client: access token ngắn hạn + refresh token xoay vòng, ưu tiên cookie HttpOnly/Secure/SameSite thay vì localStorage; hiểu đánh đổi, và đăng xuất xóa sạch dữ liệu phiên.
+
+XSS/CSRF: CSP, output encoding, CSRF token/SameSite để bảo vệ phiên.
+
+Quan sát: log sự kiện auth, cảnh báo đăng nhập bất thường, thông báo cho user khi có thay đổi bảo mật.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

@@ -1,0 +1,20 @@
+Hệ thống: Một cụm dịch vụ chạy nhiều instance cần chọn đúng một leader để làm việc đơn lẻ (scheduler, consumer duy nhất của một partition, bộ điều phối), dùng Redis, etcd hoặc ZooKeeper để phối hợp; thỉnh thoảng có GC pause, trễ mạng và phân vùng mạng.
+
+Vai trò của flow: Đảm bảo tại mọi thời điểm không có hai node cùng tin mình là leader và gây hại, và hệ thống phục hồi nhanh khi leader chết.
+
+Yêu cầu cụ thể:
+Bầu leader bằng lease: khóa có TTL, leader phải gia hạn định kỳ, follower tranh khi hết hạn; chọn TTL và chu kỳ heartbeat cân bằng giữa phát hiện lỗi nhanh và báo động nhầm.
+
+Fencing token: mỗi lần bầu có số tăng dần, tài nguyên được ghi (DB, storage) từ chối token cũ, để leader cũ vừa tỉnh dậy sau GC pause không ghi đè dữ liệu.
+
+Giới hạn của Redis lock/Redlock: vì sao lock dựa trên thời gian không an toàn tuyệt đối khi lệch đồng hồ hoặc pause; khi nào đủ dùng (tối ưu hiệu năng), khi nào cần consensus thật (đúng đắn).
+
+Consensus (Raft/Paxos) và quorum: nguyên lý đa số, số node lẻ, hành vi khi mất quá nửa node, đọc tuyến tính hóa so với đọc có thể cũ.
+
+Split-brain: nhận diện và xử lý khi phân vùng mạng làm hai nhóm cùng tự nhận có leader; chiến lược dừng nhóm thiểu số.
+
+Đồng hồ và thứ tự sự kiện: không dựa vào wall-clock giữa các máy; logical clock/version vector; xử lý clock skew.
+
+Vận hành: thời gian failover đo được, log chuyển leader, test bằng cách giết leader và cắt mạng có chủ đích.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

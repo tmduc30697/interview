@@ -1,0 +1,22 @@
+Hệ thống: CMS/tòa soạn online, công cụ soạn tài liệu và tool quản lý dự án kiểu Asana/Jira (Gantt, task, config/feature flag cho kỹ sư): nhiều người cùng mở và sửa một đối tượng, bài dài được autosave, nội dung phục vụ qua CDN + cache ứng dụng + cache DB và có rich-text từ người dùng.
+
+Vai trò của flow: Chỉnh sửa cộng tác không mất dữ liệu, không ghi đè nhầm, phục vụ nội dung tươi và an toàn, và thay đổi cấu hình nhạy cảm có kiểm soát.
+
+Yêu cầu cụ thể:
+Chống ghi đè đồng thời: optimistic locking bằng version/ETag (phát hiện conflict khi lưu, hiển thị diff/merge, thông báo người thua cuộc), hoặc khóa bi quan có lease khi mở sửa; so sánh với OT/CRDT khi cần cộng tác thời gian thực.
+
+Phụ thuộc giữa các mục: đổi ngày một task kéo theo task khác trong Gantt mà không tạo deadlock/xung đột (khóa theo thứ tự cố định, transaction ngắn).
+
+Config/feature flag nhiều kỹ sư: compare-and-swap theo version để hai người không ghi đè nhau, xác nhận thay đổi, rollback nhanh, audit log bất biến (ai, giá trị trước/sau).
+
+Autosave phía client: lưu draft vào IndexedDB liên tục, đồng bộ lên server, khôi phục sau crash/đóng nhầm tab, xử lý draft cũ xung đột với bản server, dọn dữ liệu cũ.
+
+Cache nhiều tầng: CDN edge, application cache, DB cache; khi publish/sửa phải purge/invalidate đồng bộ các tầng (surrogate key/tag), tránh phục vụ bản cũ.
+
+Thundering herd: sau khi publish bài hot, cache miss đồng loạt không được dội xuống DB (distributed lock/single-flight, serve-stale-while-revalidate, jitter TTL).
+
+XSS/sanitization: nội dung rich-text qua sanitizer allowlist + CSP, encode theo ngữ cảnh khi render.
+
+Lịch sử phiên bản: ai sửa gì, khôi phục được bản cũ.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

@@ -1,0 +1,20 @@
+Hệ thống: Backend dùng message broker/Kafka giữa các service (đơn hàng, kho, email, analytics) và một cụm worker chạy job nền chạy lâu (xuất file, gửi email hàng loạt, báo cáo), cùng vài cron job định kỳ chạy trên nhiều instance.
+
+Vai trò của flow: Truyền event và chạy job đáng tin cậy: không mất, không trùng tác dụng, đúng thứ tự khi cần, và vận hành được.
+
+Yêu cầu cụ thể:
+Outbox pattern: ghi event cùng transaction với dữ liệu nghiệp vụ, relay (polling/CDC) publish lên broker, tránh dual write; dọn outbox và đo độ trễ relay.
+
+Idempotent consumer: giao hàng at-least-once nên consumer khử trùng (processed-id table/unique key); xử lý replay.
+
+Ordering và Kafka: partition key theo thực thể để giữ thứ tự, hot partition, quản lý offset commit, consumer lag và giới hạn scale theo số partition.
+
+Retry, backoff và DLQ: phân loại lỗi tạm thời/vĩnh viễn, exponential backoff + jitter, DLQ có công cụ xem/replay, poison message không chặn hàng đợi.
+
+Cron trên nhiều instance: distributed lock lease + fencing token để chỉ một instance chạy mỗi chu kỳ, xử lý crash giữa job, đo thời gian failover.
+
+Graceful shutdown cho worker: nhận SIGTERM thì ngừng lấy job mới, hoàn tất hoặc trả job về hàng đợi (visibility timeout), checkpoint cho job dài để tiếp tục được.
+
+Autoscale theo độ sâu hàng đợi: giới hạn tối đa, backpressure, xử lý spot instance bị thu hồi.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

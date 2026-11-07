@@ -1,0 +1,20 @@
+Hệ thống: Nền tảng khoảng 10–30 microservice giao tiếp qua HTTP/gRPC nội bộ trên Kubernetes, gọi thêm dịch vụ bên thứ ba (bản đồ, SMS, push); đội on-call thường bị alert nhiễu nhưng vẫn bỏ sót sự cố; cần chịu được sự cố hạ tầng và đợt tăng tải.
+
+Vai trò của flow: Các service tìm thấy nhau, chịu lỗi của nhau, quan sát được từ đầu đến cuối, và hệ thống phục hồi được sau thảm họa.
+
+Yêu cầu cụ thể:
+Service discovery và load balancing: registry/DNS (Consul, Kubernetes service), health check, đăng ký/hủy đăng ký khi scale, client-side vs server-side LB, thuật toán (round-robin, least-connections, consistent hashing), xử lý instance chết và cache registry cũ.
+
+Circuit breaker, timeout, retry, bulkhead: tránh lỗi lan truyền (cascading failure); retry chỉ với thao tác idempotent, có budget, backoff + jitter.
+
+Distributed tracing: trace_id xuyên suốt cả call đồng bộ lẫn callback bất đồng bộ, tách thời gian chờ lock khỏi thời gian xử lý, propagate tới dịch vụ bên thứ ba, sampling.
+
+Logging và metrics có cấu trúc: correlation id, bốn tín hiệu vàng (latency, traffic, errors, saturation), không log dữ liệu nhạy cảm.
+
+SLO và alerting: SLI/SLO, error budget, alert theo burn rate thay vì ngưỡng hạ tầng rời rạc, runbook, phân vai và postmortem không đổ lỗi.
+
+Autoscaling: scale theo tải thật (RPS, queue depth), cooldown chống flapping, giới hạn tối đa để bảo vệ DB phía sau.
+
+Disaster recovery: RPO/RTO theo từng loại dữ liệu, backup + point-in-time recovery, thử restore định kỳ, backup bất biến, khôi phục riêng một tenant/bảng, failover sang vùng khác và diễn tập.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

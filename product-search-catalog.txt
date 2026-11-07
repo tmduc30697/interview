@@ -1,0 +1,22 @@
+Hệ thống: Sàn e-commerce/job board/bất động sản với hàng triệu bản ghi cần tìm kiếm và lọc: thanh search có autocomplete, bộ lọc nhiều chiều (category, brand, giá, rating, còn hàng), tìm theo bản đồ, tin đăng thay đổi hoặc đóng liên tục.
+
+Vai trò của flow: Cho kết quả nhanh, đúng, tươi, và phân trang bền vững ở quy mô lớn.
+
+Yêu cầu cụ thể:
+Search engine indexing: thiết kế mapping/analyzer (tokenize, dấu tiếng Việt, đồng nghĩa), autocomplete (edge n-gram/completion suggester), relevance ranking và boost; hỗ trợ tìm ngữ nghĩa (vector/hybrid) cho help center.
+
+Index freshness: đồng bộ từ database sang search (CDC/outbox, không dual write), xử lý tin đã đóng/hết hàng biến mất kịp thời, reindex không downtime bằng alias, chấp nhận eventual consistency có đo độ trễ.
+
+Facet và geo: facet count theo bộ lọc, truy vấn theo bounding box/geo-distance trên bản đồ, gom cụm (cluster) khi zoom.
+
+DB indexing: composite index theo thứ tự cột phù hợp cho truy vấn filter + sort, đọc EXPLAIN, tránh index thừa làm chậm ghi.
+
+Cache trang sản phẩm: invalidate khi giá/tồn kho đổi, tránh phục vụ giá cũ, chống cache stampede.
+
+Pagination và N+1: cursor/keyset thay offset ở trang sâu, giới hạn deep paging trong search; loại bỏ N+1 khi dựng danh sách (eager load/batch).
+
+Hiệu năng frontend: tối ưu LCP/CLS cho trang danh sách (ảnh responsive, lazy load, SSR), debounce autocomplete.
+
+Facet đa category: mỗi category (điện tử, thời trang, nội thất...) có bộ thuộc tính lọc riêng; dùng mapping linh hoạt có kiểm soát để không bùng nổ số field, và facet count nhanh.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

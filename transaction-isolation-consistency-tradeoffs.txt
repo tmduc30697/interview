@@ -1,0 +1,20 @@
+Hệ thống: Hệ thống đặt phòng/đặt chỗ và chuyển tiền chạy trên một database quan hệ chính và vài service phụ có dữ liệu riêng (kho, thanh toán, thông báo); thỉnh thoảng xảy ra lỗi dữ liệu chỉ lộ ra dưới tải đồng thời (đặt trùng, số dư sai) và có dữ liệu cũ ở replica/cache.
+
+Vai trò của flow: Chọn đúng mức nhất quán cho từng thao tác và giải thích được vì sao.
+
+Yêu cầu cụ thể:
+Mức isolation: read committed, repeatable read, snapshot, serializable; các hiện tượng dirty read, non-repeatable read, phantom, lost update, write skew.
+
+Ví dụ write skew: hai bác sĩ cùng xin nghỉ trực hoặc hai người cùng đặt phòng cuối: vì sao snapshot isolation không đủ, cách sửa bằng SELECT ... FOR UPDATE, ràng buộc unique/exclusion, hoặc serializable kèm retry.
+
+Lost update: giải quyết bằng cập nhật nguyên tử, optimistic locking với version, hoặc khóa dòng; chọn theo mức tranh chấp.
+
+Giao dịch xuyên service: so sánh 2PC (chặn, coordinator là điểm lỗi) với saga (eventual, cần compensate) và outbox; khi nào chấp nhận cái nào.
+
+CAP và PACELC: khi mạng phân vùng chọn consistency hay availability cho từng loại dữ liệu (số dư vs feed); khi không có phân vùng thì đánh đổi độ trễ so với nhất quán.
+
+Mô hình nhất quán: strong, linearizable, causal, eventual, read-your-writes, monotonic reads; chỉ cách đạt được chúng với replica và cache.
+
+Kiểm chứng: viết test đồng thời tái hiện race condition, và có job kiểm tra bất biến (tổng tiền, số chỗ không vượt sức chứa).
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

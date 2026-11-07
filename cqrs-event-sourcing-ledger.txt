@@ -1,0 +1,20 @@
+Hệ thống: Hệ thống đơn hàng và sổ cái tài chính cần lịch sử đầy đủ, truy vết và khả năng dựng lại trạng thái ở bất kỳ thời điểm nào; đồng thời có nhiều màn hình đọc nặng (dashboard, báo cáo, tìm kiếm) khác hẳn mô hình ghi.
+
+Vai trò của flow: Tách đường ghi khỏi đường đọc và lưu trạng thái dưới dạng chuỗi sự kiện bất biến, nhưng vẫn vận hành được.
+
+Yêu cầu cụ thể:
+Event sourcing: lưu sự kiện append-only làm nguồn sự thật, trạng thái hiện tại là kết quả replay; thiết kế sự kiện theo ngôn ngữ nghiệp vụ, không lưu "cập nhật bảng".
+
+Snapshot: tạo snapshot định kỳ để dựng lại nhanh khi chuỗi sự kiện dài.
+
+Kiểm soát đồng thời khi ghi: optimistic concurrency theo version của aggregate, phát hiện conflict khi hai lệnh cùng ghi, retry hoặc từ chối.
+
+CQRS: mô hình ghi (command) tách khỏi mô hình đọc (read model/projection); projection xây từ luồng sự kiện, có thể rebuild từ đầu, chấp nhận eventual consistency và nói rõ với giao diện (hiển thị "đang xử lý", đọc lại sau ghi).
+
+Độ tin cậy của projection: xử lý idempotent, theo dõi độ trễ projection, xử lý sự kiện lỗi mà không chặn, rebuild không downtime.
+
+Tiến hóa sự kiện (schema evolution): versioning sự kiện, upcasting, không sửa sự kiện cũ; xử lý sự kiện sai bằng sự kiện đính chính.
+
+Đánh đổi: khi nào KHÔNG nên dùng (CRUD đơn giản), độ phức tạp vận hành, truy vấn ad-hoc khó, xóa dữ liệu cá nhân (GDPR) với log bất biến.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

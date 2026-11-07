@@ -1,0 +1,20 @@
+Hệ thống: Web app SaaS B2B (dashboard, danh sách task/ticket/contact hàng chục nghìn bản ghi) và e-commerce SPA (giỏ hàng, form checkout nhiều bước); người dùng hay mở nhiều tab, mạng chập chờn hoặc mất kết nối giữa chừng.
+
+Vai trò của flow: Giữ dữ liệu người dùng không mất, giao diện mượt với dữ liệu lớn, và đồng bộ lại đúng khi có mạng.
+
+Yêu cầu cụ thể:
+Lưu cục bộ có chủ đích: chọn nơi lưu theo loại dữ liệu (localStorage cho nhỏ/đồng bộ, IndexedDB cho lớn/có cấu trúc, cookie HttpOnly cho phiên, không lưu token ở nơi JS đọc được nếu tránh được); xử lý hạn mức dung lượng và dữ liệu hỏng.
+
+Giỏ hàng và form dở dang: lưu bản nháp để reload không mất, nhưng khi quay lại phải đối chiếu với giá/tồn kho/khuyến mãi hiện tại và báo thay đổi; có phiên bản schema cho dữ liệu lưu, TTL và dọn dữ liệu cũ, xóa khi đăng xuất hoặc đặt hàng xong.
+
+Đồng bộ nhiều tab: dùng storage event/BroadcastChannel, tránh ghi đè lẫn nhau giữa các tab, chọn tab "chủ" cho tác vụ chạy nền.
+
+Offline-first: hiển thị dữ liệu gần nhất khi mất mạng, hàng đợi thao tác chờ gửi (outbox phía client), gửi lại khi có mạng với idempotency key để không tạo trùng.
+
+Xung đột khi đồng bộ: phát hiện bằng version/ETag, chiến lược last-write-wins so với merge theo trường so với hỏi người dùng; hiển thị trạng thái đồng bộ rõ ràng.
+
+Danh sách lớn: virtual scrolling, phân trang/cursor, tải tăng dần và cập nhật delta thay vì tải lại toàn bộ, tìm kiếm/lọc phía client trên IndexedDB có index.
+
+Hiệu năng và UX: optimistic update kèm rollback khi lỗi, skeleton loading, không chặn main thread khi xử lý dữ liệu nặng (Web Worker).
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

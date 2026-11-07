@@ -1,0 +1,22 @@
+Hệ thống: Ngân hàng số/ví và nền tảng logistics có bảng lịch sử append-only hàng trăm triệu dòng (giao dịch, trạng thái vận đơn được đối tác cập nhật rất nhiều lần mỗi ngày), phục vụ cả người dùng lẫn CSKH tra cứu theo nhiều tiêu chí; dùng một primary với nhiều read replica, đang tiến tới sharding; bảng trạng thái vận đơn hiện chỉ lưu một cột status đơn.
+
+Vai trò của flow: Tra cứu nhanh, ghi nhiều không nghẽn, dữ liệu nhất quán ở mức cần thiết, có lịch sử đầy đủ, và hạ tầng scale được khi dữ liệu tăng.
+
+Yêu cầu cụ thể:
+Indexing cho bảng vừa đọc vừa ghi nhiều: composite index (account_id, created_at DESC) cho lịch sử, index cho tra cứu của CSKH (mã giao dịch, số tiền, trạng thái), covering/partial index; vì mỗi index làm chậm ghi nên chỉ giữ index cần thiết; đọc EXPLAIN và đo thay vì đoán.
+
+Partitioning: partition theo thời gian, lưu trữ lạnh dữ liệu cũ, truy vấn có điều kiện thời gian để partition pruning; cân nhắc tách bảng "trạng thái hiện tại" (nhỏ, nóng) khỏi bảng "lịch sử" (lớn, append-only).
+
+Schema migration sang bảng lịch sử trạng thái: tách cột status thành shipment_status_history mà vẫn giữ trạng thái hiện tại truy vấn nhanh; không downtime (ghi kép, backfill theo lô, chuyển đọc, bỏ cột cũ); chuẩn hóa trạng thái khác nhau của từng đối tác.
+
+Cập nhật không theo thứ tự: sự kiện từ đối tác đến trễ, trùng hoặc đảo thứ tự; dùng timestamp của nguồn kèm state machine, idempotent theo event id; đối tác gọi chậm/lỗi thì dùng circuit breaker riêng từng đối tác và hiển thị trạng thái gần nhất, đồng thời tuân thủ rate limit của đối tác khi gọi ra.
+
+Cursor pagination: phân trang theo (created_at, id) thay offset; không COUNT toàn bảng.
+
+Replication lag và read-after-write: đọc replica cho lịch sử nhưng sau khi ghi thì người dùng phải thấy bản ghi mới (đọc primary tạm thời hoặc theo vị trí log); số dư và kiểm tra quyền luôn đọc primary; theo dõi lag, loại replica quá chậm; failover và nguy cơ mất ghi chưa replicate.
+
+Sharding: chọn shard key (account_id), tránh hot shard, truy vấn cross-shard, resharding không downtime, consistent hashing, ID toàn cục, giao dịch xuyên shard (saga/2PC) khi chuyển tiền giữa hai shard.
+
+Audit và bảo mật: truy cập của CSKH ghi log bất biến, che dữ liệu nhạy cảm.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

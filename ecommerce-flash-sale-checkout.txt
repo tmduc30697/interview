@@ -1,0 +1,22 @@
+Hệ thống: Sàn e-commerce mở flash sale lúc 12:00:00: 100 sản phẩm giá sốc, hàng chục nghìn người bấm "Mua ngay" trong vài giây đầu, traffic tăng gấp 20 lần; giá và tồn kho thay đổi liên tục, hệ thống có nhiều kho và nhiều instance checkout.
+
+Vai trò của flow: Chịu được đợt tăng tải đột biến, không bán lố hàng, không sập backend, và vẫn cho trải nghiệm công bằng.
+
+Yêu cầu cụ thể:
+Giữ chỗ tồn kho (inventory reservation): trừ/giữ tồn kho nguyên tử (Redis Lua hoặc UPDATE ... WHERE stock > 0), soft reserve 15 phút có TTL và tự nhả khi hết hạn hoặc thanh toán thất bại; giữ chỗ theo từng kho, chọn kho theo khu vực, có chiến lược khi một kho hết hàng.
+
+Distributed lock: khi cần lock phân tán trên sản phẩm hot, dùng lock có TTL + fencing token; giải thích khi nào nên dùng lock, khi nào nên dùng atomic counter/queue hóa để tránh lock thành nút cổ chai.
+
+Rate limiting / throttle: giới hạn request checkout đồng thời (token bucket/leaky bucket, theo user/IP), hàng chờ (waiting room) khi vượt ngưỡng, trả 429 kèm Retry-After; chống bot mua gom.
+
+Load balancing: phân tải thích hợp (least-connections, health check, outlier ejection), warm-up trước giờ sale, autoscale theo lưu lượng, bảo vệ service phụ thuộc bằng giới hạn kết nối.
+
+Cache invalidation: cache trang sản phẩm/giá/tồn kho phải theo kịp thay đổi mà vẫn chịu tải: TTL ngắn, invalidate theo sự kiện, tách phần tĩnh (mô tả) khỏi phần động (tồn kho); chống thundering herd khi cache miss đồng loạt (request coalescing, lock, serve-stale).
+
+Idempotency: bấm lặp hoặc retry không tạo đơn/trừ kho hai lần (idempotency key).
+
+Đối soát cuối sự kiện: số đơn thành công không vượt tồn kho gốc; có job đối soát kho và đơn, hoàn lại hàng giữ chỗ bị bỏ rơi.
+
+Tồn kho do seller tự quản (marketplace/C2C): seller sửa hoặc xóa số lượng trong lúc buyer đang đặt; dùng optimistic locking/giữ chỗ, quyết định xử lý đơn đã đặt khi sản phẩm bị xóa, và tách quota/index theo seller để seller lớn không làm chậm seller nhỏ.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

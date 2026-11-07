@@ -1,0 +1,18 @@
+Hệ thống: Sản phẩm có người dùng ở châu Âu và nhiều quản trị viên/nhân viên hỗ trợ; dữ liệu cá nhân nằm ở nhiều DB, search index, cache, log, backup và dịch vụ bên thứ ba.
+
+Vai trò của flow: Đáp ứng quyền xóa/xuất dữ liệu (GDPR) và chứng minh được ai đã truy cập hay thay đổi dữ liệu nào.
+
+Yêu cầu cụ thể:
+Xóa dữ liệu theo yêu cầu: lập bản đồ dữ liệu cá nhân, lan truyền yêu cầu xóa tới mọi nơi lưu trữ (kể cả search index, cache, analytics, đối tác); phân biệt xóa cứng, ẩn danh hóa và dữ liệu phải giữ theo luật; xử lý khóa ngoại khi xóa user.
+
+Backup và log: không sửa được ngay nên cần chính sách hết hạn và đảm bảo dữ liệu đã xóa không bị khôi phục lại; che/băm dữ liệu cá nhân trong log.
+
+Xuất dữ liệu cá nhân: định dạng đọc được bằng máy, xác minh danh tính người yêu cầu, thời hạn xử lý theo luật, khoảng chờ để hủy yêu cầu.
+
+Audit log bất biến: ghi ai/làm gì/trên đối tượng nào/khi nào/từ đâu/giá trị trước-sau (kể cả impersonation); append-only (WORM hoặc chuỗi băm), tách quyền đọc khỏi người bị giám sát, gắn chặt với thao tác nghiệp vụ.
+
+Truy vấn và lưu giữ log: tìm kiếm hiệu quả khối lượng lớn, chính sách lưu giữ, xuất báo cáo cho kiểm toán, cảnh báo thao tác bất thường (xuất hàng loạt, truy cập ngoài giờ).
+
+Quản lý secret và quyền truy cập: secret trong vault có audit, nguyên tắc quyền tối thiểu, xoay vòng và thu hồi khi nhân sự rời đi.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

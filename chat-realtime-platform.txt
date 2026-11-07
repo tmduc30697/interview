@@ -1,0 +1,20 @@
+Hệ thống: Backend chat real-time giữ WebSocket cho hàng chục nghìn user, group chat, nhiều node gateway, deploy thường xuyên; có bot/spam gửi tin hàng loạt.
+
+Vai trò của flow: Giao tin nhắn đúng thứ tự, không mất, chịu được deploy và spam mà không đứt kết nối hàng loạt.
+
+Yêu cầu cụ thể:
+Phân phối tin nhắn nhiều node: dùng pub/sub/broker để chuyển tin tới node đang giữ kết nối của người nhận; presence bằng heartbeat + TTL.
+
+Thứ tự và độ tin cậy: thứ tự trong từng hội thoại (partition theo conversation id hoặc sequence number), ack và retry phía client, khử trùng bằng message id, lưu để đồng bộ lại khi reconnect.
+
+Graceful shutdown: khi rolling restart, ngừng nhận kết nối mới, báo client reconnect có jitter (tránh thundering herd), cho hoàn tất tin đang gửi, rồi đóng; chỉnh deregistration delay của load balancer, xử lý SIGTERM và timeout.
+
+Rate limiting chống spam: giới hạn theo user/phòng (token bucket) nhưng không làm phiền người gõ nhanh thật, phát hiện bot, mute/ban tạm thời.
+
+Retry/DLQ cho tác vụ phụ: gửi push/email thông báo khi offline qua hàng đợi, retry có backoff, DLQ cho lỗi vĩnh viễn.
+
+Quy mô kết nối: autoscale theo số kết nối, phân bổ đều kết nối giữa các node, giới hạn memory mỗi kết nối.
+
+Email thông báo khi offline: cấu hình SPF/DKIM/DMARC, xử lý bounce và khiếu nại spam, danh sách chặn, giới hạn tốc độ gửi theo nhà cung cấp để giữ uy tín tên miền.
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

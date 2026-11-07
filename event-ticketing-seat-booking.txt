@@ -1,0 +1,20 @@
+Hệ thống: Nền tảng bán vé concert hot: khách chọn ghế cụ thể trên sơ đồ hội trường, một đơn có thể gồm nhiều ghế, hàng chục nghìn người cùng thao tác, và admin có thể đổi giá hoặc mở/khóa ghế trong lúc đang bán.
+
+Vai trò của flow: Không bao giờ bán trùng một ghế, cho khách thời gian giữ ghế hợp lý, và không bị kẹt khóa khi nhiều người tranh nhiều ghế.
+
+Yêu cầu cụ thể:
+Hold ghế bằng distributed lock/TTL: giữ ghế tạm 5–10 phút, tự nhả khi hết hạn hoặc khách hủy; xử lý crash của node đang giữ khóa.
+
+Deadlock: đơn nhiều ghế phải khóa theo thứ tự cố định (sắp xếp seat_id) hoặc khóa tất-cả-hoặc-không; nêu cách phát hiện deadlock, retry khi DB trả lỗi deadlock, và rút ngắn transaction.
+
+Optimistic vs pessimistic locking: dùng version/điều kiện cập nhật cho thao tác ít tranh chấp, khóa bi quan cho ghế hot; so sánh đánh đổi.
+
+Admin đổi giá/mở khóa ghế đồng thời với khách đặt: đảm bảo không lệch giá giữa lúc xem và lúc thanh toán, và không xảy ra deadlock giữa job admin hàng loạt với giao dịch của khách.
+
+Waiting room / rate limiting: xếp hàng ảo để bảo vệ hệ thống, công bằng theo thứ tự đến, chống bot.
+
+Realtime sơ đồ ghế: cập nhật trạng thái ghế qua WebSocket/SSE, chấp nhận trễ nhẹ nhưng bước chốt vẫn kiểm tra ở server.
+
+Đối soát: ghế được giữ nhưng thanh toán lỗi/timeout phải được nhả đúng lúc, không để ghế "ma".
+
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
