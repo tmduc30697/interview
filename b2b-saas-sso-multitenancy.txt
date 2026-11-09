@@ -18,5 +18,3 @@ Cache quyền (permission cache): cache role/permission để khỏi query mỗi
 Rate limit và load balancing theo tenant: quota theo gói, weighted routing, tách tenant lớn sang pool riêng.
 
 Cô lập theo seller/phòng ban: người bán chỉ thấy và sửa dữ liệu đơn hàng, sản phẩm của mình, kiểm tra ở tầng dữ liệu chứ không chỉ ở UI; báo cáo và API đều lọc theo seller_id.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

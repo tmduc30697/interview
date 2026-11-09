@@ -16,5 +16,3 @@ Waiting room / rate limiting: xếp hàng ảo để bảo vệ hệ thống, c�
 Realtime sơ đồ ghế: cập nhật trạng thái ghế qua WebSocket/SSE, chấp nhận trễ nhẹ nhưng bước chốt vẫn kiểm tra ở server.
 
 Đối soát: ghế được giữ nhưng thanh toán lỗi/timeout phải được nhả đúng lúc, không để ghế "ma".
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

@@ -14,5 +14,3 @@ Load test và kiểm chứng: kịch bản tải thực tế (không chỉ reque
 Kiểm soát chi phí: chọn kích thước instance, reserved/spot, autoscale có giới hạn, lifecycle cho storage, giảm chi phí truyền dữ liệu giữa vùng, gắn nhãn chi phí theo team/tính năng và cảnh báo vượt ngân sách.
 
 Đánh đổi: chi phí và độ phức tạp của multi-region so với lợi ích; khi nào một vùng với backup liên vùng là đủ.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

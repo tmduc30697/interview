@@ -14,5 +14,3 @@ Audit log bất biến: ghi ai/làm gì/trên đối tượng nào/khi nào/từ
 Truy vấn và lưu giữ log: tìm kiếm hiệu quả khối lượng lớn, chính sách lưu giữ, xuất báo cáo cho kiểm toán, cảnh báo thao tác bất thường (xuất hàng loạt, truy cập ngoài giờ).
 
 Quản lý secret và quyền truy cập: secret trong vault có audit, nguyên tắc quyền tối thiểu, xoay vòng và thu hồi khi nhân sự rời đi.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

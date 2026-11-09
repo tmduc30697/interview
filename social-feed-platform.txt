@@ -16,5 +16,3 @@ Realtime và thông báo: push qua WebSocket/SSE khi online, push/email khi offl
 Client: khôi phục đúng vị trí scroll và danh sách đã tải khi bấm Back (lưu state), đồng bộ giữa nhiều tab, xử lý dữ liệu cũ khi quay lại.
 
 Tách schema: bình luận lồng nhau tách khỏi bảng bài viết bằng migration an toàn nếu cần.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

@@ -16,5 +16,3 @@ Cron trên nhiều instance: distributed lock lease + fencing token để chỉ 
 Graceful shutdown cho worker: nhận SIGTERM thì ngừng lấy job mới, hoàn tất hoặc trả job về hàng đợi (visibility timeout), checkpoint cho job dài để tiếp tục được.
 
 Autoscale theo độ sâu hàng đợi: giới hạn tối đa, backpressure, xử lý spot instance bị thu hồi.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

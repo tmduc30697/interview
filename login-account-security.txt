@@ -16,5 +16,3 @@ Lưu phiên ở client: access token ngắn hạn + refresh token xoay vòng, ư
 XSS/CSRF: CSP, output encoding, CSRF token/SameSite để bảo vệ phiên.
 
 Quan sát: log sự kiện auth, cảnh báo đăng nhập bất thường, thông báo cho user khi có thay đổi bảo mật.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

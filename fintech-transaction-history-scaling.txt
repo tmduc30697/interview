@@ -18,5 +18,3 @@ Replication lag và read-after-write: đọc replica cho lịch sử nhưng sau 
 Sharding: chọn shard key (account_id), tránh hot shard, truy vấn cross-shard, resharding không downtime, consistent hashing, ID toàn cục, giao dịch xuyên shard (saga/2PC) khi chuyển tiền giữa hai shard.
 
 Audit và bảo mật: truy cập của CSKH ghi log bất biến, che dữ liệu nhạy cảm.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

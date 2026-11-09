@@ -14,5 +14,3 @@ Schema migration kiểu expand/contract: thêm cột/bảng tương thích ngư�
 API versioning cho mobile: giữ tương thích nhiều phiên bản app, feature flag, chính sách ngừng hỗ trợ (deprecation), buộc nâng cấp khi cần.
 
 Điều kiện tiên quyết: health/readiness check chính xác, observability để quyết định promote hay rollback.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

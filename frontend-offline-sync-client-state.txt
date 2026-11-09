@@ -16,5 +16,3 @@ Xung đột khi đồng bộ: phát hiện bằng version/ETag, chiến lược 
 Danh sách lớn: virtual scrolling, phân trang/cursor, tải tăng dần và cập nhật delta thay vì tải lại toàn bộ, tìm kiếm/lọc phía client trên IndexedDB có index.
 
 Hiệu năng và UX: optimistic update kèm rollback khi lỗi, skeleton loading, không chặn main thread khi xử lý dữ liệu nặng (Web Worker).
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

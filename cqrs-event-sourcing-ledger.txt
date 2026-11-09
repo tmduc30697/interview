@@ -16,5 +16,3 @@ CQRS: mô hình ghi (command) tách khỏi mô hình đọc (read model/projecti
 Tiến hóa sự kiện (schema evolution): versioning sự kiện, upcasting, không sửa sự kiện cũ; xử lý sự kiện sai bằng sự kiện đính chính.
 
 Đánh đổi: khi nào KHÔNG nên dùng (CRUD đơn giản), độ phức tạp vận hành, truy vấn ad-hoc khó, xóa dữ liệu cá nhân (GDPR) với log bất biến.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

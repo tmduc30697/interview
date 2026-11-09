@@ -20,5 +20,3 @@ Reconciliation: đối soát hàng ngày giữa ledger/hóa đơn nội bộ v�
 Payout/hoa hồng: chia tiền cho seller hoặc tài xế sau khi trừ phí, hoàn tiền (kể cả phát sinh sau khi đã payout, trừ vào kỳ sau) và cuốc hủy hoặc trả tiền mặt; payout chạy lại được mà không trả hai lần.
 
 Giao dịch giá trị lớn: step-up xác thực, giới hạn hạn mức, cảnh báo bất thường.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

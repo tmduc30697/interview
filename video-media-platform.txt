@@ -16,5 +16,3 @@ Progressive availability: video public khi có ít nhất một rendition sẵn 
 CDN: signed URL/cookie cho nội dung riêng tư, cache key và TTL, thu hồi quyền khi đã cache ở edge, invalidate khi thay file.
 
 Vòng đời lưu trữ: dọn file gốc/tạm sau X ngày, chuyển lạnh, vẫn giữ khả năng re-transcode khi đổi codec.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

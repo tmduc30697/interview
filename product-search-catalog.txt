@@ -18,5 +18,3 @@ Pagination và N+1: cursor/keyset thay offset ở trang sâu, giới hạn deep 
 Hiệu năng frontend: tối ưu LCP/CLS cho trang danh sách (ảnh responsive, lazy load, SSR), debounce autocomplete.
 
 Facet đa category: mỗi category (điện tử, thời trang, nội thất...) có bộ thuộc tính lọc riêng; dùng mapping linh hoạt có kiểm soát để không bùng nổ số field, và facet count nhanh.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

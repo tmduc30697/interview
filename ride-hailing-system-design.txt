@@ -16,5 +16,3 @@ Máy trạng thái chuyến đi: requested → matched → picking-up → in-tri
 Giá và thanh toán: tính giá theo quãng đường/thời gian, surge pricing theo cung cầu từng khu vực, thanh toán thẻ hoặc tiền mặt, chia tiền cho tài xế và đối soát.
 
 Scale và độ tin cậy: phân vùng theo thành phố/khu vực, sharding, cache, xử lý một thành phố quá nóng, degrade mềm khi một thành phần lỗi, và những đánh đổi bạn chấp nhận.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

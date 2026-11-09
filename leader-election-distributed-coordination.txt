@@ -16,5 +16,3 @@ Split-brain: nhận diện và xử lý khi phân vùng mạng làm hai nhóm c�
 Đồng hồ và thứ tự sự kiện: không dựa vào wall-clock giữa các máy; logical clock/version vector; xử lý clock skew.
 
 Vận hành: thời gian failover đo được, log chuyển leader, test bằng cách giết leader và cắt mạng có chủ đích.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

@@ -18,5 +18,3 @@ Thundering herd: sau khi publish bài hot, cache miss đồng loạt không đư
 XSS/sanitization: nội dung rich-text qua sanitizer allowlist + CSP, encode theo ngữ cảnh khi render.
 
 Lịch sử phiên bản: ai sửa gì, khôi phục được bản cũ.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

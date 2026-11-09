@@ -16,5 +16,3 @@ CAP và PACELC: khi mạng phân vùng chọn consistency hay availability cho t
 Mô hình nhất quán: strong, linearizable, causal, eventual, read-your-writes, monotonic reads; chỉ cách đạt được chúng với replica và cache.
 
 Kiểm chứng: viết test đồng thời tái hiện race condition, và có job kiểm tra bất biến (tổng tiền, số chỗ không vượt sức chứa).
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

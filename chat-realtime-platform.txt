@@ -16,5 +16,3 @@ Retry/DLQ cho tác vụ phụ: gửi push/email thông báo khi offline qua hàn
 Quy mô kết nối: autoscale theo số kết nối, phân bổ đều kết nối giữa các node, giới hạn memory mỗi kết nối.
 
 Email thông báo khi offline: cấu hình SPF/DKIM/DMARC, xử lý bounce và khiếu nại spam, danh sách chặn, giới hạn tốc độ gửi theo nhà cung cấp để giữ uy tín tên miền.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

@@ -14,5 +14,3 @@ Feature flag: bật/tắt tính năng không cần deploy, rollout theo phần t
 Thử nghiệm A/B: phân nhóm nhất quán theo user (hash ổn định), chọn chỉ số chính và chỉ số bảo vệ, cỡ mẫu và thời lượng, tránh nhìn kết quả sớm (peeking), xử lý nhiều thử nghiệm chồng nhau.
 
 Quyền riêng tư: ẩn danh/băm định danh, tuân thủ đồng ý của người dùng và yêu cầu xóa dữ liệu trong kho phân tích.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

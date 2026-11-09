@@ -16,5 +16,3 @@ SLO và alerting: SLI/SLO, error budget, alert theo burn rate thay vì ngưỡng
 Autoscaling: scale theo tải thật (RPS, queue depth), cooldown chống flapping, giới hạn tối đa để bảo vệ DB phía sau.
 
 Disaster recovery: RPO/RTO theo từng loại dữ liệu, backup + point-in-time recovery, thử restore định kỳ, backup bất biến, khôi phục riêng một tenant/bảng, failover sang vùng khác và diễn tập.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

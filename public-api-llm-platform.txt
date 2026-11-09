@@ -16,5 +16,3 @@ Webhook gửi đi: ký payload (HMAC), retry backoff + DLQ, xử lý endpoint kh
 Chống SSRF: chặn IP nội bộ/metadata cloud sau khi phân giải DNS, chống DNS rebinding và redirect, giới hạn scheme/cổng/kích thước/timeout, chạy qua egress proxy.
 
 Quản lý secret: lưu API key băm, key của provider trong vault, rotate không downtime với hai key hợp lệ cùng lúc, phát hiện secret bị lộ, không log secret.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

@@ -18,5 +18,3 @@ Idempotency: bấm lặp hoặc retry không tạo đơn/trừ kho hai lần (id
 Đối soát cuối sự kiện: số đơn thành công không vượt tồn kho gốc; có job đối soát kho và đơn, hoàn lại hàng giữ chỗ bị bỏ rơi.
 
 Tồn kho do seller tự quản (marketplace/C2C): seller sửa hoặc xóa số lượng trong lúc buyer đang đặt; dùng optimistic locking/giữ chỗ, quyết định xử lý đơn đã đặt khi sản phẩm bị xóa, và tách quota/index theo seller để seller lớn không làm chậm seller nhỏ.
-
-–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
